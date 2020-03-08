@@ -1,0 +1,94 @@
+<window id="win" title="Search" border="normal"
+	apply="demo.getting_started.mvc.SearchController">
+	<hbox align="center">
+		Keyword:
+		<textbox id="keywordBox" />
+		<button id="searchButton" label="Search" iconSclass="z-icon-search" />
+	</hbox>
+	<listbox id="carListbox" model="${win$composer.carsModel}" checkmark="true" mold="paging" pageSize="5" style="margin-top:10px">
+		<listhead>
+			<listheader label="Model" sort="auto(model)"/>
+			<listheader label="Make" sort="auto(Make)"/>
+			<listheader label="Price" sort="auto(Price)" width="20%"/>
+			<listheader label="Color" sort="auto(Color)"/>
+		</listhead>
+		<template name="model">
+			<listitem>
+				<listcell label="${each.model}"></listcell>
+				<listcell label="${each.make}"></listcell>
+				<zk>
+					<zscript><![CDATA[
+						int price = each.price;
+						String color = "";
+						if(price > 0 && price < 20000) {
+							color = "color:green";
+        				} else if(price > 20000 && price < 50000) {
+        					color = "color:yellow";
+        				} else if(price > 50000) {
+        					color = "color:red";
+        				}
+    				]]></zscript>
+				<listcell>$<label value="${each.price}" style="${color}"/></listcell>
+				</zk>
+				<listcell  label="${each.color}"></listcell>
+			</listitem>
+		</template>
+	</listbox>
+	<hlayout style="margin-top:10px">
+    	<div height="10px"/>
+    	<checkbox label="Switch Paging Mold">
+        	<attribute name="onCheck"><![CDATA[
+            carListbox.pagingChild.mold = "os".equals(carListbox.pagingChild.mold) ? "default" : "os";
+        ]]></attribute>
+    	</checkbox>
+	</hlayout>
+	<hbox style="margin-top:20px" id="detailBox" visible="false">
+		<image id="previewImage" style="padding:10px" />
+		<vbox>
+			<hlayout>
+				Model : <label id="modelLabel" style="font-weight:bold"/>
+			</hlayout>
+			<hlayout>
+				Make : <label id="makeLabel" style="font-weight:bold"/>
+			</hlayout>
+			<hlayout>
+				Price : 
+				<span>$<label id="priceLabel" style="font-weight:bold"/></span>
+			</hlayout>
+			<label id="descriptionLabel" />
+		</vbox>
+	</hbox>
+	<button id="addCarButton" label="Add Car" onClick='addCarPopup.open(self)'/>
+	<popup id="addCarPopup" width="600px">
+		<grid hflex="1">
+			<auxhead>
+				<auxheader colspan="2" label="Add New Car" style="font-size:16px" align="center"/>
+			</auxhead>
+			<columns visible="false">
+				<column></column>
+				<column></column>
+			</columns>
+			<rows>
+				<row align="center">
+					Car Model <textbox id="carModelTextBox" hflex="1" constraint="/^[a-zA-Z]+$/:Must be alpha characters"/>
+				</row>
+				<row align="center">
+					Car Make <textbox id="carMakeTextBox" hflex="1" constraint="/^[a-zA-Z]+$/:Must be alpha characters"/>
+				</row>
+				<row align="center">
+					Description <textbox id="carDescTextBox" hflex="1" constraint="/^[a-zA-Z ]+$/:Must be alpha characters"/>
+				</row>
+				<row align="center">
+					Price <textbox id="carPriceTextBox" hflex="1" constraint="/^[0-9]+$/:Must be numeric characters"/>
+				</row>
+				<row align="center">
+					Color <textbox id="carColorTextBox" hflex="1" constraint="/^[a-zA-Z]+$/:Must be alpha characters"/>
+				</row>
+				<row align="center" >
+					<button id="addCarSubmitButton" label="Submit"/>
+				</row>
+			</rows>
+		</grid>
+	</popup>
+	<button id="delCarButton" label="Delete" visible="false"/>
+</window>
